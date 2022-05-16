@@ -32,6 +32,7 @@ public class Movement : MonoBehaviour
 
     Vector3 moveDirection;
 
+    public bool wallrunning;
     public Rigidbody rb;
 
     private void Start()

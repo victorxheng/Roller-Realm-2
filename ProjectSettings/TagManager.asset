@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Shootable
   layers:
   - Default
   - TransparentFX
@@ -11,21 +12,21 @@ TagManager:
   - 
   - Water
   - UI
-  - whatIsPlayer
   - 
   - 
-  - whatIsWall
-  - whatIsGround
-  - 
-  - 
-  - 
-  - whatIsKnife
+  - Lighting
+  - Ground
+  - Postprocessing
   - 
   - 
   - 
   - 
   - 
-  - postProcessing
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -38,6 +39,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Fire
+    uniqueID: 3804908061
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
