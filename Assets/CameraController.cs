@@ -16,8 +16,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float PitchUpperLimit;
     [SerializeField] public float ZoomLowerLimit;
     [SerializeField] public float ZoomUpperLimit;
-    [SerializeField, Range(0.005f, 1.0f)] public float OrbitalAcceleration;
-    [SerializeField, Range(0.005f, 1.0f)] public float ZoomAcceleration;
+    [SerializeField, Range(0.005f, 2.0f)] public float OrbitalAcceleration;
+    [SerializeField, Range(0.005f, 2.0f)] public float ZoomAcceleration;
     [SerializeField] public Transform FollowTransform;
 
     private float _targetPitch = 20.0f;
@@ -57,7 +57,7 @@ public class CameraController : MonoBehaviour
             //_targetZoom = Mathf.Clamp(originalZoom - (PitchZoomLimit - (_targetPitch + p))/PitchLowerLimit, ZoomLowerLimit, ZoomUpperLimit);
 
             float zoomLerpFactor = Mathf.Clamp((ZoomAcceleration * Time.deltaTime) / 0.018f, 0.01f, 1.0f);
-            _actualZoom = Mathf.Lerp(_actualZoom, ZoomLowerLimit + (ZoomUpperLimit - ZoomLowerLimit) * Mathf.Pow((_targetPitch + p-PitchLowerLimit) / (PitchZoomLimit - PitchLowerLimit),4), zoomLerpFactor);
+            _actualZoom = Mathf.Lerp(_actualZoom, ZoomLowerLimit + (ZoomUpperLimit - ZoomLowerLimit) * Mathf.Pow((_targetPitch - PitchLowerLimit) / (PitchZoomLimit - PitchLowerLimit),2.4f), zoomLerpFactor);
         }
         else
         {
