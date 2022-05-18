@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Runtime.InteropServices;
-using DG.Tweening;
 
 public class CameraController : MonoBehaviour
 {
@@ -73,28 +72,27 @@ public class CameraController : MonoBehaviour
         _actualPitch = Mathf.Lerp(_actualPitch, _targetPitch, orbitLerpFactor);
         _actualYaw = Mathf.Lerp(_actualYaw, _targetYaw, orbitLerpFactor);
     }
+    public bool playerAlive = true;
 
     public void LateUpdate()
     {
         // Construct orientation of the camera
         var t = transform;
-        t.localPosition = FollowTransform == null ? Vector3.zero : FollowTransform.position + offset;
-        t.localRotation = Quaternion.identity;
 
-        var up = t.up;
-        t.localRotation = Quaternion.Euler(_actualPitch, 0.0f, 0.0f);
-        t.RotateAround(FollowTransform == null ? Vector3.zero : FollowTransform.position + offset, up, _actualYaw);
-        t.localPosition = (up * 0.5f + t.forward * -_actualZoom) + t.localPosition;
-    }
+        if (playerAlive)
+        {
+            t.localPosition = FollowTransform == null ? Vector3.zero : FollowTransform.position + offset;
+            t.localRotation = Quaternion.identity;
 
-    public void DoFov(float endValue)
-    {
-        GetComponent<Camera>().DOFieldOfView(endValue, 0.25f);
-    }
-
-    public void DoTilt(float zTilt)
-    {
-        transform.DOLocalRotate(new Vector3(0, 0, zTilt), 0.25f);
+            var up = t.up;
+            t.localRotation = Quaternion.Euler(_actualPitch, 0.0f, 0.0f);
+            t.RotateAround(FollowTransform == null ? Vector3.zero : FollowTransform.position + offset, up, _actualYaw);
+            t.localPosition = (up * 0.5f + t.forward * -_actualZoom) + t.localPosition;
+        }
+        else
+        {
+            t.LookAt(FollowTransform);
+        }
     }
 
 

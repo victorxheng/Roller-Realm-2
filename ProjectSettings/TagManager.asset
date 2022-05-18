@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shootable
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -12,12 +13,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Enemies
+  - Player
   - Lighting
   - Ground
   - Postprocessing
-  - 
+  - Curry
   - 
   - 
   - 

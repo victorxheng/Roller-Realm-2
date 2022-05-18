@@ -32,8 +32,11 @@ public class Movement : MonoBehaviour
 
     Vector3 moveDirection;
 
-    public bool wallrunning;
     public Rigidbody rb;
+
+    public CameraController cameraScript;
+
+    public GameObject explosion;
 
     private void Start()
     {
@@ -43,7 +46,7 @@ public class Movement : MonoBehaviour
     private void Update()
     {
         //ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f);
 
         MyInput();
         SpeedControl();
@@ -53,6 +56,8 @@ public class Movement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0.5f;
+
+        CheckDeath();
     }
 
     private void MyInput()
@@ -115,4 +120,27 @@ public class Movement : MonoBehaviour
     {
         readyToJump = true;
     }
+
+    private void CheckDeath()
+    {
+        if(transform.position.y > 40 || transform.position.y < -10)
+        {
+            if (cameraScript.playerAlive && explosion != null)
+            {
+                Instantiate(explosion, transform.position, Quaternion.identity);
+                Invoke("OnDeath", 3);
+            }
+            cameraScript.playerAlive = false;
+        }
+    }
+
+    private Vector3 spawnPosition;
+    private void OnDeath()
+    {
+        spawnPosition = new Vector3(Random.Range(-10, 10), 5, Random.Range(-10, 10));
+        transform.position = spawnPosition;
+        rb.velocity = new Vector3(0, 0, 0);
+        cameraScript.playerAlive = true;
+    }
+
 }
