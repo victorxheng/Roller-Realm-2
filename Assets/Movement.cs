@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviourPun
 {
 
     [Header("Movement")]
@@ -38,18 +39,41 @@ public class Movement : MonoBehaviour
 
     public GameObject explosion;
 
+    public static GameObject LocalPlayerInstance;
+
+    private void Awake()
+    {
+        // #Important
+        // used in GameManager.cs: we keep track of the localPlayer instance to prevent instantiation when levels are synchronized
+        if (photonView.IsMine)
+        {
+            Movement.LocalPlayerInstance = this.gameObject;
+        }
+        // #Critical
+        // we flag as don't destroy on load so that instance survives level synchronization, thus giving a seamless experience when levels load.
+        DontDestroyOnLoad(this.gameObject);
+    }
     private void Start()
     {
+        spawnPosition = new Vector3(Random.Range(-10, 10), 5, Random.Range(-10, 10));
+        transform.position = spawnPosition;
+        rb.velocity = new Vector3(0, 0, 0);
         //rb.freezeRotation = true;
         ResetJump();
+
     }
     private void Update()
     {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+
         //ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f);
 
         MyInput();
-        SpeedControl();
+        //SpeedControl();
 
         //handle drag
         if (grounded)
@@ -79,6 +103,10 @@ public class Movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
         MovePlayer();
     }
 

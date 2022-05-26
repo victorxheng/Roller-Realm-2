@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Runtime.InteropServices;
+using Photon.Pun;
 
-public class CameraController : MonoBehaviour
+public class CameraController : MonoBehaviourPun
 {
 
     [SerializeField, Range(1f, 15.0f)] public float PitchSensitivity;
@@ -29,11 +30,18 @@ public class CameraController : MonoBehaviour
     private Vector3 offset = new Vector3(0, 1, 0);
 
     private void Start()
-    { 
-        
+    {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            this.gameObject.SetActive(false);
+        }
     }
     public void Update()
     {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
         float p = 0.0f;
         float y = 0.0f;
 
