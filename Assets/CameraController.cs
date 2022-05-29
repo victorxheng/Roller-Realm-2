@@ -31,17 +31,9 @@ public class CameraController : MonoBehaviourPun
 
     private void Start()
     {
-        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
-        {
-            this.gameObject.SetActive(false);
-        }
     }
     public void Update()
     {
-        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
-        {
-            return;
-        }
         float p = 0.0f;
         float y = 0.0f;
 
@@ -60,12 +52,12 @@ public class CameraController : MonoBehaviourPun
                 y = YawSensitivity * Input.GetAxis("Mouse X");
             }
         }
-        if (_targetPitch + p < PitchZoomLimit)
+        if (((_targetPitch + p > 180f )?( _targetPitch + p - 360f ):( _targetPitch + p ))< PitchZoomLimit)
         {
             //_targetZoom = Mathf.Clamp(originalZoom - (PitchZoomLimit - (_targetPitch + p))/PitchLowerLimit, ZoomLowerLimit, ZoomUpperLimit);
 
             float zoomLerpFactor = Mathf.Clamp((ZoomAcceleration * Time.deltaTime) / 0.018f, 0.01f, 1.0f);
-            _actualZoom = Mathf.Lerp(_actualZoom, ZoomLowerLimit + (ZoomUpperLimit - ZoomLowerLimit) * Mathf.Pow((_targetPitch - PitchLowerLimit) / (PitchZoomLimit - PitchLowerLimit),2.4f), zoomLerpFactor);
+            _actualZoom = Mathf.Lerp(_actualZoom, ZoomLowerLimit + (ZoomUpperLimit - ZoomLowerLimit) * Mathf.Pow((_targetPitch - PitchLowerLimit) / (PitchZoomLimit - PitchLowerLimit),10f), zoomLerpFactor);
         }
         else
         {

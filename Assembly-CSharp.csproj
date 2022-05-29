@@ -89,6 +89,7 @@
     <Compile Include="Assets\Joystick Pack\Examples\JoystickSetterExample.cs" />
     <Compile Include="Assets\Shared\Scripts\AdjustTimeScale.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
+    <Compile Include="Assets\SpawnMapElements.cs" />
     <Compile Include="Assets\StartCamera.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\FloatingJoystick.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
@@ -98,7 +99,9 @@
     <Compile Include="Assets\CameraController.cs" />
     <Compile Include="Assets\Follow.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
-    <Compile Include="Assets\SpawnMapElements.cs" />
+    <Compile Include="Assets\GetData.cs" />
+    <Compile Include="Assets\Billboard.cs" />
+    <Compile Include="Assets\Username.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />

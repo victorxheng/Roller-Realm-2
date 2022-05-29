@@ -48,6 +48,11 @@ public class Movement : MonoBehaviourPun
         if (photonView.IsMine)
         {
             Movement.LocalPlayerInstance = this.gameObject;
+            Camera.main.gameObject.GetComponent<CameraController>().FollowTransform = transform;
+            Camera.main.gameObject.SetActive(true);
+            //orientation = GameObject.Find("Orientation").transform;
+            cameraScript = Camera.main.gameObject.GetComponent<CameraController>();
+
         }
         // #Critical
         // we flag as don't destroy on load so that instance survives level synchronization, thus giving a seamless experience when levels load.
@@ -64,8 +69,18 @@ public class Movement : MonoBehaviourPun
     }
     private void Update()
     {
+
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
         {
+            //ground check
+            grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f);
+
+            //handle drag
+            if (grounded)
+                rb.drag = groundDrag;
+            else
+                rb.drag = 0.5f;
+            SpeedControl();
             return;
         }
 
@@ -73,8 +88,8 @@ public class Movement : MonoBehaviourPun
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f);
 
         MyInput();
-        //SpeedControl();
 
+        SpeedControl();
         //handle drag
         if (grounded)
             rb.drag = groundDrag;
