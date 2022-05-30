@@ -102,6 +102,15 @@
     <Compile Include="Assets\GetData.cs" />
     <Compile Include="Assets\Billboard.cs" />
     <Compile Include="Assets\Username.cs" />
+    <Compile Include="Assets\ScoreManager.cs" />
+    <Compile Include="Assets\ScoreboardManager.cs" />
+    <Compile Include="Assets\ShowLeaderboard.cs" />
+    <Compile Include="Assets\DreamloLeaderboard.cs" />
+    <Compile Include="Assets\LeaderboardMenu.cs" />
+    <Compile Include="Assets\dreamlo\dreamloPromoCode.cs" />
+    <Compile Include="Assets\dreamlo\LeaderBoardSample.cs" />
+    <Compile Include="Assets\dreamlo\dreamloLeaderBoard.cs" />
+    <Compile Include="Assets\CurryChat.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
@@ -113,6 +122,7 @@
     <None Include="Assets\EffectExamples\Misc Effects\Prefabs\Readme_Dissolve_Respawn_.txt" />
     <None Include="Assets\Photon\PhotonLibs\WebSocket\websocket-sharp.dll" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\TextMesh Pro\Resources\airstrike\airstrike.txt" />
     <None Include="Assets\EffectExamples\Magic Effects\Shaders\Ice.shader" />
     <None Include="Assets\EffectExamples\Misc Effects\Shaders\Respawn.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
@@ -128,6 +138,7 @@
     <None Include="Assets\Photon\PhotonLibs\Photon3Unity3D.dll" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Photon\PhotonLibs\Metro\Photon3Unity3D.dll" />
+    <None Include="Assets\dreamlo\README_FIRST.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\EffectExamples\Misc Effects\Shaders\FireFly.shader" />
     <None Include="Assets\Photon\PhotonLibs\Photon3Unity3D.xml" />

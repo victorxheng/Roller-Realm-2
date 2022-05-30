@@ -41,6 +41,9 @@ public class Movement : MonoBehaviourPun
 
     public static GameObject LocalPlayerInstance;
 
+
+    public bool hitByOwnerBullet = false;
+
     private void Awake()
     {
         // #Important
@@ -81,6 +84,7 @@ public class Movement : MonoBehaviourPun
             else
                 rb.drag = 0.5f;
             SpeedControl();
+            CheckNetworkDeath();
             return;
         }
 
@@ -164,12 +168,35 @@ public class Movement : MonoBehaviourPun
         readyToJump = true;
     }
 
+    private float lowerY = -10;
+    private float upperY = 40;
+    private bool networkAlive = true;
+    private void CheckNetworkDeath()
+    {
+        if (transform.position.y > upperY || transform.position.y < lowerY)
+        {
+            if (networkAlive)
+            {
+                if (hitByOwnerBullet)
+                {
+                    ScoreManager.SessionKill();
+                    GameObject.Find("Launcher").GetPhotonView().RPC("RecievedDeath", photonView.Owner, ScoreManager.rating);
+                }
+            }
+            networkAlive = false;
+        }
+        else if (!networkAlive)
+        {
+            networkAlive = true;
+        }
+    }
     private void CheckDeath()
     {
-        if(transform.position.y > 40 || transform.position.y < -10)
+        if(transform.position.y > upperY || transform.position.y < lowerY)
         {
             if (cameraScript.playerAlive && explosion != null)
             {
+                ScoreManager.SessionDeath();
                 Instantiate(explosion, transform.position, Quaternion.identity);
                 Invoke("OnDeath", 3);
             }
