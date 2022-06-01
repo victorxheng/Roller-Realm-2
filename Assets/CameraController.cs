@@ -9,8 +9,8 @@ using Photon.Pun;
 public class CameraController : MonoBehaviourPun
 {
 
-    [SerializeField, Range(1f, 15.0f)] public float PitchSensitivity;
-    [SerializeField, Range(1f, 15.0f)] public float YawSensitivity;
+    [SerializeField, Range(0f, 15.0f)] public float PitchSensitivity;
+    [SerializeField, Range(0f, 15.0f)] public float YawSensitivity;
     [SerializeField, Range(0.1f, 5f)] public float ZoomSensitivity;
     [SerializeField] public float PitchZoomLimit;
     [SerializeField] public float PitchLowerLimit;
@@ -29,6 +29,9 @@ public class CameraController : MonoBehaviourPun
     private bool _useOrbit = false;
     private Vector3 offset = new Vector3(0, 1, 0);
 
+
+    public TouchInputManager input;
+
     private void Start()
     {
     }
@@ -37,20 +40,35 @@ public class CameraController : MonoBehaviourPun
         float p = 0.0f;
         float y = 0.0f;
 
-        bool isOverUI = EventSystem.current.IsPointerOverGameObject();
-        bool enableOrbit = !isOverUI;
-
-        if (!Input.GetKey(KeyCode.Mouse0))
+        bool touchOverSurface = false;
+        float xAxis = 0.0f;
+        float yAxis = 0.0f;
+        foreach (Touch touch in Input.touches)
         {
-            _useOrbit = enableOrbit;
-        }
-        else
-        {
-            if (_useOrbit)
+            int id = touch.fingerId;
+            if ((float)touch.position.x / (float)Screen.width > 0.5)
             {
-                p = -PitchSensitivity * Input.GetAxis("Mouse Y");
-                y = YawSensitivity * Input.GetAxis("Mouse X");
+                touchOverSurface = true;
+                xAxis = touch.deltaPosition.x;
+                yAxis = touch.deltaPosition.y;
             }
+        }
+        if (!touchOverSurface && Input.GetKey(KeyCode.Mouse0))
+        {
+            print((float)Input.mousePosition.x / (float)Screen.width);
+            if ((float)Input.mousePosition.x / (float)Screen.width > 0.5f)
+            {
+                touchOverSurface = true;
+                xAxis = Input.GetAxis("Mouse X");
+                yAxis = Input.GetAxis("Mouse Y");
+            }
+        }
+
+
+        if (touchOverSurface)
+        {
+            p = -PitchSensitivity * yAxis;
+            y = YawSensitivity * xAxis;
         }
         if (((_targetPitch + p > 180f )?( _targetPitch + p - 360f ):( _targetPitch + p ))< PitchZoomLimit)
         {

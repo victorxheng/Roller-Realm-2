@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviourPun
 {
@@ -44,6 +45,9 @@ public class Movement : MonoBehaviourPun
 
     public bool hitByOwnerBullet = false;
 
+    public Joystick joystick;
+    public ButtonState jumpButton;
+
     private void Awake()
     {
         // #Important
@@ -55,7 +59,8 @@ public class Movement : MonoBehaviourPun
             Camera.main.gameObject.SetActive(true);
             //orientation = GameObject.Find("Orientation").transform;
             cameraScript = Camera.main.gameObject.GetComponent<CameraController>();
-
+            joystick = GameObject.Find("Joystick").GetComponent<Joystick>();
+            jumpButton = GameObject.Find("JumpButton").GetComponent<ButtonState>();
         }
         // #Critical
         // we flag as don't destroy on load so that instance survives level synchronization, thus giving a seamless experience when levels load.
@@ -63,7 +68,7 @@ public class Movement : MonoBehaviourPun
     }
     private void Start()
     {
-        spawnPosition = new Vector3(Random.Range(-10, 10), 5, Random.Range(-10, 10));
+        spawnPosition = new Vector3(Random.Range(-25, 25), 8, Random.Range(-25, 25));
         transform.position = spawnPosition;
         rb.velocity = new Vector3(0, 0, 0);
         //rb.freezeRotation = true;
@@ -81,8 +86,8 @@ public class Movement : MonoBehaviourPun
             //handle drag
             if (grounded)
                 rb.drag = groundDrag;
-            else
-                rb.drag = 0.5f;
+           else
+                rb.drag = 0.1f;
             SpeedControl();
             CheckNetworkDeath();
             return;
@@ -98,7 +103,7 @@ public class Movement : MonoBehaviourPun
         if (grounded)
             rb.drag = groundDrag;
         else
-            rb.drag = 0.5f;
+            rb.drag = 0.1f;
 
         CheckDeath();
     }
@@ -106,11 +111,13 @@ public class Movement : MonoBehaviourPun
     private void MyInput()
     {
         //TODO: REPLACE WITH JOYSTICKS
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        //horizontalInput = Input.GetAxisRaw("Horizontal");
+        //verticalInput = Input.GetAxisRaw("Vertical");
+        horizontalInput = joystick.Horizontal;
+        verticalInput = joystick.Vertical;
 
         //when jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if(jumpButton.pressed && readyToJump && grounded)
         {
             readyToJump = false;
 
@@ -207,7 +214,7 @@ public class Movement : MonoBehaviourPun
     private Vector3 spawnPosition;
     private void OnDeath()
     {
-        spawnPosition = new Vector3(Random.Range(-10, 10), 5, Random.Range(-10, 10));
+        spawnPosition = new Vector3(Random.Range(-25, 25), Random.Range(8,15), Random.Range(-25, 25));
         transform.position = spawnPosition;
         rb.velocity = new Vector3(0, 0, 0);
         cameraScript.playerAlive = true;

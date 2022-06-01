@@ -55,3 +55,18 @@ The following packages were added:
   com.unity.2d.tilemap@1.0.0
   com.unity.postprocessing@2.3.0
   com.unity.progrids@3.0.3-preview.4
+
+=== Mon May 30 17:43:04 2022
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 1.5.7 to 1.15.16
+  com.unity.ide.rider from version 2.0.7 to 3.0.14
+  com.unity.ide.visualstudio from version 2.0.8 to 2.0.15
+  com.unity.ide.vscode from version 1.2.3 to 1.2.5
+  com.unity.ml-agents from version 1.0.8 to 2.0.0
+  com.unity.postprocessing from version 2.3.0 to 3.2.2
+  com.unity.test-framework from version 1.1.24 to 1.1.31
+  com.unity.timeline from version 1.4.8 to 1.6.4
