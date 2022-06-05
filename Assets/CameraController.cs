@@ -55,7 +55,6 @@ public class CameraController : MonoBehaviourPun
         }
         if (!touchOverSurface && Input.GetKey(KeyCode.Mouse0))
         {
-            print((float)Input.mousePosition.x / (float)Screen.width);
             if ((float)Input.mousePosition.x / (float)Screen.width > 0.5f)
             {
                 touchOverSurface = true;

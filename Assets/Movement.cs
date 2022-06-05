@@ -1,8 +1,5 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Movement : MonoBehaviourPun
 {
@@ -13,17 +10,16 @@ public class Movement : MonoBehaviourPun
     public float groundDrag;
 
     public float jumpForce;
-    public float jumpCooldown;
-    public float airMultiplier;
-    bool readyToJump;
+    public float jumpCooldownTime;
+    public float airDecreaseFactor;
+    bool isPlayerReadyToJump;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
 
     [Header("Ground Check")]
     public float playerHeight;
-    public LayerMask whatIsGround;
-    bool grounded;
+    private bool grounded = false;
 
     public Transform orientation;//TODO: ADD ORIENTATION SEPERATE OBJECT
 
@@ -32,7 +28,7 @@ public class Movement : MonoBehaviourPun
 
     Joystick moveJoystick;
 
-    Vector3 moveDirection;
+    Vector3 orientationForwardDirection;
 
     public Rigidbody rb;
 
@@ -47,6 +43,7 @@ public class Movement : MonoBehaviourPun
 
     public Joystick joystick;
     public ButtonState jumpButton;
+    public LayerMask whatIsGround;
 
     private void Awake()
     {
@@ -88,17 +85,17 @@ public class Movement : MonoBehaviourPun
                 rb.drag = groundDrag;
            else
                 rb.drag = 0.1f;
-            SpeedControl();
+            LimitSpeed();
             CheckNetworkDeath();
             return;
         }
 
         //ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        
+        ReadInput();
 
-        MyInput();
-
-        SpeedControl();
+        LimitSpeed();
         //handle drag
         if (grounded)
             rb.drag = groundDrag;
@@ -108,22 +105,21 @@ public class Movement : MonoBehaviourPun
         CheckDeath();
     }
 
-    private void MyInput()
+    private void ReadInput()
     {
-        //TODO: REPLACE WITH JOYSTICKS
-        //horizontalInput = Input.GetAxisRaw("Horizontal");
-        //verticalInput = Input.GetAxisRaw("Vertical");
-        horizontalInput = joystick.Horizontal;
-        verticalInput = joystick.Vertical;
-
-        //when jump
-        if(jumpButton.pressed && readyToJump && grounded)
+        horizontalInput = Mathf.Sign(joystick.Horizontal) * Mathf.Pow(joystick.Horizontal,2);
+        verticalInput = Mathf.Sign(joystick.Vertical) * Mathf.Pow(joystick.Vertical, 2);
+        if(grounded)
         {
-            readyToJump = false;
+            //when jump
+            if (jumpButton.pressed && isPlayerReadyToJump)
+            {
+                isPlayerReadyToJump = false;
 
-            Jump();
+                Jump();
 
-            Invoke(nameof(ResetJump), jumpCooldown);
+                Invoke(nameof(ResetJump), jumpCooldownTime);
+            }
         }
 
     }
@@ -133,50 +129,49 @@ public class Movement : MonoBehaviourPun
         {
             return;
         }
-        MovePlayer();
+        MovePlayerInDirection();
     }
 
-    private void MovePlayer()
+    private void MovePlayerInDirection()
     {
         //calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        orientationForwardDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         //on ground
         if (grounded)
-            rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
+            rb.AddForce(orientationForwardDirection * moveSpeed * 10f, ForceMode.Force);
         //in air
         else if (!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            rb.AddForce(orientationForwardDirection.normalized * moveSpeed * 10f * airDecreaseFactor, ForceMode.Force);
     }
 
-    private void SpeedControl()
+    private void LimitSpeed()
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Vector3 limitedVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         //limit velocity if needed
-        if(flatVel.magnitude > moveSpeed)
+        if(limitedVelocity.magnitude > moveSpeed)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            Vector3 limitedVel = limitedVelocity.normalized * moveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
 
     private void Jump()
     {
-        //reset y velocity
+        //reset the y velocity component
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
+        //add jump force to rigidbody component
         rb.AddForce(orientation.up * jumpForce, ForceMode.Impulse);
-
     }
 
     private void ResetJump()
     {
-        readyToJump = true;
+        isPlayerReadyToJump = true;
     }
 
     private float lowerY = -10;
-    private float upperY = 40;
+    private float upperY = 50;
     private bool networkAlive = true;
     private void CheckNetworkDeath()
     {
@@ -203,6 +198,7 @@ public class Movement : MonoBehaviourPun
         {
             if (cameraScript.playerAlive && explosion != null)
             {
+                if (PhotonNetwork.CurrentRoom.PlayerCount == 1) GameObject.Find("Launcher").GetComponent<ScoreboardManager>().RobotDeath();
                 ScoreManager.SessionDeath();
                 Instantiate(explosion, transform.position, Quaternion.identity);
                 Invoke("OnDeath", 3);

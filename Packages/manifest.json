@@ -10,6 +10,7 @@
     "com.unity.netcode.gameobjects": "file:C:/Users/victo/Documents/GitHub/com.unity.netcode.gameobjects/com.unity.netcode.gameobjects",
     "com.unity.postprocessing": "3.2.2",
     "com.unity.progrids": "3.0.3-preview.4",
+    "com.unity.render-pipelines.universal": "12.1.6",
     "com.unity.test-framework": "1.1.31",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.6.4",
